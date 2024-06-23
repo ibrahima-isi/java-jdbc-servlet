@@ -13,6 +13,7 @@
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
+    <%@include file="topbar.jsp" %>
     <div class="container col-md-10 col-md-offset-1 mt-5">
         <div class="card">
             <div class="card-header">Liste des produits</div>
@@ -30,8 +31,8 @@
                     <c:forEach items="${prodModel.produits}" var="p">
                         <div class="card-header">Nom du produit : ${p.produit_name}</div>
                         <div class="card-body btn-outline-primary">Quantité : ${p.produit_qty}</div>
+                        <div class="card-footer"><a href="add.do" class="btn btn-info">Ajouter</a> | <a href="edit.do?id=${p.produit_id}" class="btn btn-warning">Modifier</a>  | <a href="#" class="btn btn-danger">Supprimer</a></div>
                     </c:forEach>
-
                 </div>
             </div>
         </div>

@@ -28,37 +28,61 @@ public class ProduitServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
         if(path.equalsIgnoreCase("/index.do")){
-            // initiation du mot clé
-            String keyword = "";
+            forward("", req, resp);
 
-            // recuperation des produits grace au mot clé, il retourne tous les produits si il est vide.
-            List<Produit> produits = dao.getProduitByKeyWord("%"+keyword+"%");
-
-            // recuperation des produits dans le model produit et envoi vers la vue.
-            ProduitModel produitModel = new ProduitModel();
-
-            // definition des valeurs a renvoyer vers la vue
-            produitModel.setKeyword("");
-            produitModel.setProduits(produits);
-            req.setAttribute("prodModel", produitModel);
-            // renvoi de la vue list.jsp
-            req.getRequestDispatcher("list.jsp").forward(req, resp);
         } else if (path.equalsIgnoreCase("/search.do")) {
             // initiation du mot clé
             String keyword = req.getParameter("keyword");
+            forward(keyword, req, resp);
 
-            // recuperation des produits grace au mot clé, il retourne tous les produits si il est vide.
-            List<Produit> produits = dao.getProduitByKeyWord("%"+keyword+"%");
+        }else if(path.equalsIgnoreCase("/add.do")){
+            req.getRequestDispatcher("add.jsp").forward(req, resp);
 
-            // recuperation des produits dans le model produit et envoi vers la vue.
-            ProduitModel produitModel = new ProduitModel();
+        } else if (path.equalsIgnoreCase("/save.do")) {
+            String p_name = req.getParameter("name");
+            int p_qty = Integer.parseInt(req.getParameter("qty"));
+            Produit produit = new Produit();
+            produit.setProduit_name(p_name);
+            produit.setProduit_qty(p_qty);
+            dao.saveProduit(produit);
+            forward("", req, resp);
 
-            // definition des valeurs a renvoyer vers la vue
-            produitModel.setKeyword(keyword);
-            produitModel.setProduits(produits);
-            req.setAttribute("prodModel", produitModel);
-            // renvoi de la vue list.jsp
-            req.getRequestDispatcher("list.jsp").forward(req, resp);
+        } else if (path.equalsIgnoreCase("/edit.do")){
+            Produit produit = dao.getProduitById(Integer.parseInt(req.getParameter("id")));
+            req.setAttribute("produit", produit);
+            req.getRequestDispatcher("edit.jsp").forward(req, resp);
+        } else if(path.equalsIgnoreCase("/update.do") && req.getMethod().equalsIgnoreCase("post")){
+            Produit produit = new Produit();
+            produit.setProduit_id(Integer.parseInt(req.getParameter("id")));
+            produit.setProduit_name(req.getParameter("name"));
+            produit.setProduit_qty(Integer.parseInt(req.getParameter("qty")));
+            System.out.println(produit);
+            dao.updateProduit(produit);
+            forward("", req, resp);
+
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
+    public  void forward(String s, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // initiation du mot clé
+        String keyword = s;
+
+        // recuperation des produits grace au mot clé, il retourne tous les produits si il est vide.
+        List<Produit> produits = dao.getProduitByKeyWord("%"+keyword+"%");
+
+        // recuperation des produits dans le model produit et envoi vers la vue.
+        ProduitModel produitModel = new ProduitModel();
+
+        // definition des valeurs a renvoyer vers la vue
+        produitModel.setKeyword(s);
+        produitModel.setProduits(produits);
+        request.setAttribute("prodModel", produitModel);
+        // renvoi de la vue list.jsp
+        request.getRequestDispatcher("list.jsp").forward(request, response);
     }
 }
