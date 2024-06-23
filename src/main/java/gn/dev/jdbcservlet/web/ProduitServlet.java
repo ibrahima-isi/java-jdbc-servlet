@@ -27,7 +27,7 @@ public class ProduitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
-        if(path.equalsIgnoreCase("/index.do")){
+        if(path.equalsIgnoreCase("/index.do") || path.equalsIgnoreCase("/")){
             forward("", req, resp);
 
         } else if (path.equalsIgnoreCase("/search.do")) {
@@ -38,7 +38,7 @@ public class ProduitServlet extends HttpServlet {
         }else if(path.equalsIgnoreCase("/add.do")){
             req.getRequestDispatcher("add.jsp").forward(req, resp);
 
-        } else if (path.equalsIgnoreCase("/save.do")) {
+        } else if (path.equalsIgnoreCase("/save.do") && req.getMethod().equalsIgnoreCase("post")) {
             String p_name = req.getParameter("name");
             int p_qty = Integer.parseInt(req.getParameter("qty"));
             Produit produit = new Produit();
@@ -59,6 +59,15 @@ public class ProduitServlet extends HttpServlet {
             System.out.println(produit);
             dao.updateProduit(produit);
             forward("", req, resp);
+
+        }else if(path.equalsIgnoreCase("/delete.do")){
+            dao.deleteProduitById(Integer.parseInt(req.getParameter("id")));
+            System.out.println("Produit deleted successfully !");
+            forward("", req, resp);
+        }else {
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("text/html");
+            out.println("<h1>404 PAGE NOT FOUND</h1>");
 
         }
     }
