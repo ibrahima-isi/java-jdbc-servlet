@@ -31,7 +31,7 @@
                     <c:forEach items="${prodModel.produits}" var="p">
                         <div class="card-header">Nom du produit : ${p.produit_name}</div>
                         <div class="card-body btn-outline-primary">Quantité : ${p.produit_qty}</div>
-                        <div class="card-footer"><a href="add.do" class="btn btn-info">Ajouter</a> | <a href="edit.do?id=${p.produit_id}" class="btn btn-warning">Modifier</a>  | <a href="#" class="btn btn-danger">Supprimer</a></div>
+                        <div class="card-footer"><a href="add.do" class="btn btn-info">Ajouter</a> | <a href="edit.do?id=${p.produit_id}" class="btn btn-warning">Modifier</a>  | <a href="delete.do?id=${p.produit_id}" class="btn btn-danger" onclick="return confirm('Voulez-vous supprimer ce produit ?')">Supprimer</a></div>
                     </c:forEach>
                 </div>
             </div>
